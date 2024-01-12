@@ -1,0 +1,36 @@
+pipeline{
+    agent any
+    stages{
+        stage("checkout github from repo"){
+            steps{
+                git url:'https://github.com/Arundevops2310/DevOpsClassCodes'
+                echo 'checkout github'
+            }
+        }
+        stage("complie the code"){
+            steps{
+                sh "mvn compile"
+                echo 'compile done'
+            }
+        }
+        stage("testing"){
+            steps{
+                sh "mvn test"
+                echo 'testing done'
+            }
+        }
+        stage("qa by frontend team"){
+            steps{
+                sh "mvn pmd:pmd"
+                echo 'generate report'
+                recordIssues(tools: [pmdParser()])
+            }
+        }
+        stage("packaging"){
+            steps{
+                sh "mvn package"
+                echo 'convert package to war file'
+            }
+        }
+    }
+}
